@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,7 +17,7 @@ func NewTodoRepository(db *mongo.Database) *TodoRepository {
 	return &TodoRepository{db: db}
 }
 
-func (r *TodoRepository) Create(ctx context.Context, todo models.Todo) error {
+func (r *TodoRepository) Create(ctx context.Context, todo model.Todo) error {
 	_, err := r.db.Collection("todos").InsertOne(ctx, todo)
 	if err != nil {
 		return err
@@ -25,16 +25,16 @@ func (r *TodoRepository) Create(ctx context.Context, todo models.Todo) error {
 	return nil
 }
 
-func (r *TodoRepository) FindAll(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (r *TodoRepository) FindAll(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	cursor, err := r.db.Collection("todos").Find(ctx, bson.M{"userId": userID})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
-	var todos []*models.Todo
+	var todos []*model.Todo
 	for cursor.Next(ctx) {
-		var todo models.Todo
+		var todo model.Todo
 		if err := cursor.Decode(&todo); err != nil {
 			return nil, err
 		}
@@ -48,7 +48,7 @@ func (r *TodoRepository) FindAll(ctx context.Context, userID primitive.ObjectID)
 	return todos, nil
 }
 
-func (r *TodoRepository) Update(ctx context.Context, todoID primitive.ObjectID, userID primitive.ObjectID, options models.TodoUpdateOptions) error {
+func (r *TodoRepository) Update(ctx context.Context, todoID primitive.ObjectID, userID primitive.ObjectID, options model.TodoUpdateOptions) error {
 	result := r.db.Collection("todos").FindOne(ctx, bson.M{"_id": todoID, "userId": userID})
 	if err := result.Err(); err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -75,16 +75,16 @@ func (r *TodoRepository) Delete(ctx context.Context, todoID primitive.ObjectID, 
 	return nil
 }
 
-func (r *TodoRepository) FindCompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (r *TodoRepository) FindCompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	cursor, err := r.db.Collection("todos").Find(ctx, bson.M{"userId": userID, "completed": true})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
-	var todos []*models.Todo
+	var todos []*model.Todo
 	for cursor.Next(ctx) {
-		var todo models.Todo
+		var todo model.Todo
 		if err := cursor.Decode(&todo); err != nil {
 			return nil, err
 		}
@@ -98,16 +98,16 @@ func (r *TodoRepository) FindCompletedTodos(ctx context.Context, userID primitiv
 	return todos, nil
 }
 
-func (r *TodoRepository) FindImportantTodos(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (r *TodoRepository) FindImportantTodos(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	cursor, err := r.db.Collection("todos").Find(ctx, bson.M{"userId": userID, "important": true})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
-	var todos []*models.Todo
+	var todos []*model.Todo
 	for cursor.Next(ctx) {
-		var todo models.Todo
+		var todo model.Todo
 		if err := cursor.Decode(&todo); err != nil {
 			return nil, err
 		}
@@ -121,16 +121,16 @@ func (r *TodoRepository) FindImportantTodos(ctx context.Context, userID primitiv
 	return todos, nil
 }
 
-func (r *TodoRepository) FindUncompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (r *TodoRepository) FindUncompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	cursor, err := r.db.Collection("todos").Find(ctx, bson.M{"userId": userID, "completed": false})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
 
-	var todos []*models.Todo
+	var todos []*model.Todo
 	for cursor.Next(ctx) {
-		var todo models.Todo
+		var todo model.Todo
 		if err := cursor.Decode(&todo); err != nil {
 			return nil, err
 		}

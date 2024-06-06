@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"github.com/morf1lo/todo/internal/repository"
 	"github.com/morf1lo/todo/pkg/auth"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,7 +17,7 @@ func NewAuthService(repo *repository.Repository) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) Create(ctx context.Context, user models.User) (string, error) {
+func (s *AuthService) Create(ctx context.Context, user model.User) (string, error) {
 	user.ID = primitive.NewObjectID()
 	if err := s.repo.Authorization.CreateUser(ctx, user); err != nil {
 		return "", err
@@ -26,8 +26,8 @@ func (s *AuthService) Create(ctx context.Context, user models.User) (string, err
 	return user.ID.Hex(), nil
 }
 
-func (s *AuthService) SignIn(ctx context.Context, user models.User) (string, error) {
-	var existingUser *models.User
+func (s *AuthService) SignIn(ctx context.Context, user model.User) (string, error) {
+	var existingUser *model.User
 	if err := s.repo.User.FindByUsername(ctx, user.Username).Decode(&existingUser); err != nil {
 		return "", err
 	}

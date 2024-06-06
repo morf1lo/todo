@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"github.com/morf1lo/todo/pkg/auth"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -12,7 +12,7 @@ import (
 func (h *Handler) createTodo(c *gin.Context) {
 	user := auth.GetUserFromRequest(c)
 
-	var todo models.Todo
+	var todo model.Todo
 	if err := c.ShouldBindJSON(&todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -43,7 +43,7 @@ func (h *Handler) getTodos(c *gin.Context) {
 func (h *Handler) updateTodo(c *gin.Context) {
 	user := auth.GetUserFromRequest(c)
 
-	var options models.TodoUpdateOptions
+	var options model.TodoUpdateOptions
 	if err := c.ShouldBindJSON(&options); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -5,12 +5,12 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"github.com/morf1lo/todo/pkg/auth"
 )
 
 func (h *Handler) signUp(c *gin.Context) {
-	var user models.User
+	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -44,7 +44,7 @@ func (h *Handler) signUp(c *gin.Context) {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
-	var user models.User
+	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

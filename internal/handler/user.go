@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"github.com/morf1lo/todo/pkg/auth"
 )
 
@@ -24,7 +24,7 @@ func (h *Handler) getUser(c *gin.Context) {
 func (h *Handler) updateUsername(c *gin.Context) {
 	user := auth.GetUserFromRequest(c)
 
-	var newUsername models.User
+	var newUsername model.User
 	if err := c.ShouldBindJSON(&newUsername); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

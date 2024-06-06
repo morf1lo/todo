@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -16,7 +16,7 @@ func NewAuthRepository(db *mongo.Database) *AuthRepository {
 	return &AuthRepository{db: db}
 }
 
-func (r *AuthRepository) CreateUser(ctx context.Context, user models.User) error {
+func (r *AuthRepository) CreateUser(ctx context.Context, user model.User) error {
 	result := r.db.Collection("users").FindOne(ctx, bson.M{"username": user.Username})
 	if err := result.Err(); err != nil {
 		if err != mongo.ErrNoDocuments {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/morf1lo/todo/internal/models"
+	"github.com/morf1lo/todo/internal/model"
 	"github.com/morf1lo/todo/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -17,7 +17,7 @@ func NewTodoService(repo *repository.Repository) *TodoService {
 	return &TodoService{repo: repo}
 }
 
-func (s *TodoService) Create(ctx context.Context, todo models.Todo) error {
+func (s *TodoService) Create(ctx context.Context, todo model.Todo) error {
 	timestamp := time.Now()
 	todo.CreatedAt = timestamp.Format("2006-01-02 15:04:05")
 	todo.ID = primitive.NewObjectID()
@@ -28,7 +28,7 @@ func (s *TodoService) Create(ctx context.Context, todo models.Todo) error {
 	return nil
 }
 
-func (s *TodoService) GetAll(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (s *TodoService) GetAll(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	todos, err := s.repo.Todo.FindAll(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (s *TodoService) GetAll(ctx context.Context, userID primitive.ObjectID) ([]
 	return todos, nil
 }
 
-func (s *TodoService) Update(ctx context.Context, todoID primitive.ObjectID, userID primitive.ObjectID, options models.TodoUpdateOptions) error {
+func (s *TodoService) Update(ctx context.Context, todoID primitive.ObjectID, userID primitive.ObjectID, options model.TodoUpdateOptions) error {
 	if err := s.repo.Todo.Update(ctx, todoID, userID, options); err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (s *TodoService) Delete(ctx context.Context, todoID primitive.ObjectID, use
 	return nil
 }
 
-func (s *TodoService) GetCompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (s *TodoService) GetCompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	todos, err := s.repo.Todo.FindCompletedTodos(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (s *TodoService) GetCompletedTodos(ctx context.Context, userID primitive.Ob
 	return todos, nil
 }
 
-func (s *TodoService) GetImportantTodos(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (s *TodoService) GetImportantTodos(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	todos, err := s.repo.Todo.FindImportantTodos(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (s *TodoService) GetImportantTodos(ctx context.Context, userID primitive.Ob
 	return todos, nil
 }
 
-func (s *TodoService) GetUncompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*models.Todo, error) {
+func (s *TodoService) GetUncompletedTodos(ctx context.Context, userID primitive.ObjectID) ([]*model.Todo, error) {
 	todos, err := s.repo.Todo.FindImportantTodos(ctx, userID)
 	if err != nil {
 		return nil, err
